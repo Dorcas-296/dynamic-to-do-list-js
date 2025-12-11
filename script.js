@@ -6,7 +6,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const taskList = document.getElementById("task-list");
 
     // Initialize tasks array from Local Storage
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    let tasks = [];
+
+    // Function to load tasks from Local Storage and populate the DOM
+    function loadTasks() {
+        const storedTasks = localStorage.getItem("tasks");
+        if (storedTasks) {
+            tasks = JSON.parse(storedTasks);
+            tasks.forEach(taskText => createTaskElement(taskText));
+        }
+    }
 
     // Function to create a task element in the DOM
     function createTaskElement(taskText) {
@@ -18,21 +27,13 @@ document.addEventListener('DOMContentLoaded', function () {
         removeBtn.classList.add("remove-btn");
 
         removeBtn.onclick = function () {
-            taskList.removeChild(li);            // Remove from DOM
+            taskList.removeChild(li); // Remove from DOM
             tasks = tasks.filter(t => t !== taskText); // Remove from array
             localStorage.setItem("tasks", JSON.stringify(tasks)); // Update Local Storage
         };
 
         li.appendChild(removeBtn);
         taskList.appendChild(li);
-    }
-
-    // Function to render all tasks from Local Storage
-    function renderTasks() {
-        taskList.innerHTML = ""; // Clear existing tasks
-        tasks.forEach(taskText => {
-            createTaskElement(taskText);
-        });
     }
 
     // Function to add a new task
@@ -43,10 +44,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        tasks.push(taskText);                   // Add to array
+        tasks.push(taskText); // Add to array
         localStorage.setItem("tasks", JSON.stringify(tasks)); // Save to Local Storage
-        createTaskElement(taskText);            // Add to DOM
-        taskInput.value = "";                    // Clear input
+        createTaskElement(taskText); // Add to DOM
+        taskInput.value = ""; // Clear input
     }
 
     // Event listeners
@@ -57,6 +58,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Render tasks on page load
-    renderTasks();
+    // Load tasks from Local Storage on page load
+    loadTasks();
 });
