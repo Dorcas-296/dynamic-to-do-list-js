@@ -8,7 +8,7 @@ const taskList = document.getElementById("task-list");
 function addTask() {
     const taskText = taskInput.value.trim();
 
-if (taskText.trim () === "") {
+if (taskText === "") {
    alert("pleasee enter a task");
    return;
 }
@@ -43,7 +43,4 @@ taskInput.addEventListener("keypress", function(event) {
     }
 });
 
-    document.addEventListener("DOMContentLoaded", function() {
-    addTask();
-});
 });
