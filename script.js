@@ -17,10 +17,10 @@ if (taskText === "") {
    const li = document.createElement("li");
    li.textContent = taskText;
 
-   //create remove button
+   //create remove button and add class
    const removeBtn = document.createElement("button");
    removeBtn.textContent = "Remove";
-   removeBtn.className = "remove-btn";
+   removeBtn.classList.add("remove-btn");
 
    //remove task when clicked
    removeBtn.onclick = function() {
