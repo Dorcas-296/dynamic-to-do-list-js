@@ -1,46 +1,62 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 
-const addButton = document.getElementById("add-task-btn");
-const taskInput = document.getElementById("task-input");
-const taskList = document.getElementById("task-list");
+    // Select DOM elements
+    const addButton = document.getElementById("add-task-btn");
+    const taskInput = document.getElementById("task-input");
+    const taskList = document.getElementById("task-list");
 
-//task function
-function addTask() {
-    const taskText = taskInput.value.trim();
+    // Initialize tasks array from Local Storage
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-if (taskText === "") {
-   alert("pleasee enter a task");
-   return;
-}
+    // Function to create a task element in the DOM
+    function createTaskElement(taskText) {
+        const li = document.createElement("li");
+        li.textContent = taskText;
 
-//create the li element
-   const li = document.createElement("li");
-   li.textContent = taskText;
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "Remove";
+        removeBtn.classList.add("remove-btn");
 
-   //create remove button and add class
-   const removeBtn = document.createElement("button");
-   removeBtn.textContent = "Remove";
-   removeBtn.classList.add("remove-btn");
+        removeBtn.onclick = function () {
+            taskList.removeChild(li);            // Remove from DOM
+            tasks = tasks.filter(t => t !== taskText); // Remove from array
+            localStorage.setItem("tasks", JSON.stringify(tasks)); // Update Local Storage
+        };
 
-   //remove task when clicked
-   removeBtn.onclick = function() {
-    taskList.removeChild(li);
-   };
-
-   //Append butoon to li and tasklist
-  li.appendChild(removeBtn);
-   taskList.appendChild(li);
-
-   taskInput.value = "";
-}
-
-addButton.addEventListener("click", addTask);
-
-// When Enter key is pressed inside the input field
-taskInput.addEventListener("keypress", function(event) {
-    if (event.key === "Enter") {
-        addTask();
+        li.appendChild(removeBtn);
+        taskList.appendChild(li);
     }
-});
 
+    // Function to render all tasks from Local Storage
+    function renderTasks() {
+        taskList.innerHTML = ""; // Clear existing tasks
+        tasks.forEach(taskText => {
+            createTaskElement(taskText);
+        });
+    }
+
+    // Function to add a new task
+    function addTask() {
+        const taskText = taskInput.value.trim();
+        if (taskText === "") {
+            alert("Please enter a task");
+            return;
+        }
+
+        tasks.push(taskText);                   // Add to array
+        localStorage.setItem("tasks", JSON.stringify(tasks)); // Save to Local Storage
+        createTaskElement(taskText);            // Add to DOM
+        taskInput.value = "";                    // Clear input
+    }
+
+    // Event listeners
+    addButton.addEventListener("click", addTask);
+    taskInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            addTask();
+        }
+    });
+
+    // Render tasks on page load
+    renderTasks();
 });
